@@ -116,11 +116,22 @@ btnProcesar.addEventListener("click", async () => {
             /Densidad del Humo.*?(\d+,\d+)/
         );
 
+        //Si humoMatch existe (se encontró coincidencia)
         const humo = humoMatch
             ? humoMatch[1]
             : "No encontrado";
 
-        
+            //Buscar el resultado del ensayo
+        const resultadoHumoMatch = 
+        texto.match(
+            /Densidad del Humo[\s\S]*?Resultado\s+(\w+)/
+        );
+
+        //Guardar el resultado
+        const resultadoHumo = 
+        resultadoHumoMatch
+        ? resultadoHumoMatch[1]
+        : "No encontrado";
 
         const vehiculo = {
             fecha,
@@ -150,7 +161,7 @@ btnProcesar.addEventListener("click", async () => {
         <p><strong>Modelo:</strong> ${modelo}</p>
          <p><strong>Año:</strong> ${anio}</p>
         <p><strong>Humo:</strong>${humo}</p>
-        <p><strong>Resultado Humo</strong> ${humo}</p>
+        <p><strong>Resultado Humo</strong> ${resultadoHumo}</p>
         </div>
 
         <pre class="mt-6 p-4 bg-slate-100 rounded-lg overflow-auto text-sm">${texto}</pre>`;
