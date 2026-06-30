@@ -11,7 +11,7 @@ function extraerDato(texto, regex) {
         : "No encontrado";
 }
 
-btnProcesar.addEventListener("click",async ()=> {
+btnProcesar.addEventListener("click", async () => {
     const archivo = pdfFile.files[0];
 
     if (!archivo) {
@@ -22,8 +22,8 @@ btnProcesar.addEventListener("click",async ()=> {
     try {
         const arrayBuffer = await archivo.arrayBuffer();
 
-        const pdf = 
-        await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+        const pdf =
+            await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
         //esta parte es para contar paginas de a 1
         const pagina = await pdf.getPage(25);
@@ -38,73 +38,107 @@ btnProcesar.addEventListener("click",async ()=> {
         console.log(texto.includes("Fecha"));
         console.log(texto.match(/\d{2}-\d{2}-\d{2}/))
 
-         console.log("Pagina:", pagina.pageNumber);
-         console.log(texto);
+        console.log("Pagina:", pagina.pageNumber);
+        console.log(texto);
 
-         console.log(
+        console.log(
             texto.indexOf("Fecha")
-         );
+        );
 
-         console.log(
+        console.log(
             texto.substring(
                 texto.indexOf("Fecha"),
                 texto.indexOf("Fecha") + 150
             )
-         );
+        );
 
-         console.log(
+        console.log(
             texto.substring(
                 texto.indexOf("Dominio"),
                 texto.indexOf("Dominio") + 100
             )
-         );
+        );
 
-         console.log(
+        console.log(
             texto.substring(
                 texto.indexOf("Modelo"),
                 texto.indexOf("Modelo") + 100
             )
-         );
+        );
 
-         const fecha = extraerDato(
+        const fecha = extraerDato(
             texto,
             /Fecha.*?(\d{2}-\d{2}-\d{2})/
-         );
+        );
 
-         const marca = extraerDato(
-            texto, 
+        const marca = extraerDato(
+            texto,
             /marca:\s*([A-Z]+)/i
-         );
+        );
 
-          const interno =
+        const interno =
             extraerDato(
                 texto,
                 /Interno:\s*(\d+)/
             );
 
-            //esto busca el dominio
-             const dominioMatch = texto.match(
-                  /Dominio:\s*([A-Z]{3}\s*\d{3})/i
-             );
+        //esto busca el dominio
+        const dominioMatch = texto.match(
+            /Dominio:\s*([A-Z]{3}\s*\d{3})/i
+        );
 
-             //este lo guardo en el caso de coincidir
-          const dominio = dominioMatch
-          ? dominioMatch[1].trim()
-          : "No encontrado";
+        //este lo guardo en el caso de coincidir
+        const dominio = dominioMatch
+            ? dominioMatch[1].trim()
+            : "No encontrado";
 
 
 
         const modeloMatch =
-texto.match(
-    /Modelo:\s*([A-Z0-9 ]+?)\s+Marca Caja:/i
-);
+            texto.match(
+                /Modelo:\s*([A-Z0-9 ]+?)\s+Marca Caja:/i
+            );
 
-const modelo =
-modeloMatch
-    ? modeloMatch[1].trim()
-    : "No encontrado";
+        const modelo =
+            modeloMatch
+                ? modeloMatch[1].trim()
+                : "No encontrado";
 
-                //remplazo temporalmente
+        const anio = 
+        extraerDato(
+            texto,
+            /Año:\s*(\d{4})/
+        );
+        
+        //Busca la frase "Densidad del Humo".
+        const humoMatch = 
+        texto.match(
+            /Densidad del Humo.*?(\d+,\d+)/
+        );
+
+        const humo = humoMatch
+            ? humoMatch[1]
+            : "No encontrado";
+
+        
+
+        const vehiculo = {
+            fecha,
+            marca,
+            interno,
+            dominio,
+            modelo,
+            anio,
+            humo,
+            resultadoHumo
+        };
+
+        console.log(vehiculo);
+
+
+
+
+        //remplazo temporalmente
         //resultado.innerHTML = `PDF cargado.
         //Total de paginas: ${pdf.numPages}`;
 
@@ -114,6 +148,9 @@ modeloMatch
         <p><strong>Interno:</strong> ${interno}</p>
         <p><strong>Dominio:</strong> ${dominio}</p>
         <p><strong>Modelo:</strong> ${modelo}</p>
+         <p><strong>Año:</strong> ${anio}</p>
+        <p><strong>Humo:</strong>${humo}</p>
+        <p><strong>Resultado Humo</strong> ${humo}</p>
         </div>
 
         <pre class="mt-6 p-4 bg-slate-100 rounded-lg overflow-auto text-sm">${texto}</pre>`;
@@ -121,7 +158,7 @@ modeloMatch
 
     }
 
-    catch(error){
+    catch (error) {
         console.error(error);
         resultado.textContent = "Error al leer PDF";
     }
