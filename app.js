@@ -10,8 +10,21 @@ function extraerDato(texto, regex) {
         ? resultado[1].trim()
         : "No encontrado";
 }
+    //Crea una función llamada leerVehiculo que recibe una página del PDF.
+    async function leerVehiculo(pagina){
 
-btnProcesar.addEventListener("click", async () => {
+    //Le pide a PDF.js todos los fragmentos de texto de esa página.
+        const contenido = await pagina.getTextContent();
+
+        // recorre con map todos los str y los devuelve a texto normal
+        const texto = contenido.items.map(item => item.str).join(" ");
+
+        return texto;
+
+        
+    }
+
+    btnProcesar.addEventListener("click", async () => {
     const archivo = pdfFile.files[0];
 
     if (!archivo) {
@@ -26,12 +39,13 @@ btnProcesar.addEventListener("click", async () => {
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
         //esta parte es para contar paginas de a 1
-        const pagina = await pdf.getPage(25);
-        //obtiene los items como inspection, report etc.
-        const contenido = await pagina.getTextContent();
+        for(let i = 25; i <= 27; i++){
+            const pagina = await pdf.getPage(1);
+            console.log("Leyendo pagina", 1);
+        }
 
-        // recorre con map todos los str y los devuelve a texto normal
-        const texto = contenido.items.map(item => item.str).join(" ");
+        const texto = await leerVehiculo(pagina);
+        
 
         console.log(texto.substring(0, 1000));
 
@@ -161,7 +175,7 @@ btnProcesar.addEventListener("click", async () => {
         <p><strong>Modelo:</strong> ${modelo}</p>
          <p><strong>Año:</strong> ${anio}</p>
         <p><strong>Humo:</strong>${humo}</p>
-        <p><strong>Resultado Humo</strong> ${resultadoHumo}</p>
+        <p><strong>Resultado Humo:</strong> ${resultadoHumo}</p>
         </div>
 
         <pre class="mt-6 p-4 bg-slate-100 rounded-lg overflow-auto text-sm">${texto}</pre>`;
