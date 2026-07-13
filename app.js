@@ -10,21 +10,53 @@ function extraerDato(texto, regex) {
         ? resultado[1].trim()
         : "No encontrado";
 }
-    //Crea una función llamada leerVehiculo que recibe una página del PDF.
-    async function leerVehiculo(pagina){
+//Crea una función llamada leerVehiculo que recibe una página del PDF.
+async function leerVehiculo(pagina) {
 
     //Le pide a PDF.js todos los fragmentos de texto de esa página.
-        const contenido = await pagina.getTextContent();
+    const contenido = await pagina.getTextContent();
 
-        // recorre con map todos los str y los devuelve a texto normal
-        const texto = contenido.items.map(item => item.str).join(" ");
+    const texto = contenido.items
+        .map(item => item.str)
+        .join(" ");
 
-        return texto;
+    const fecha = extraerDato(
+        texto,
+        /Fecha.*?(\d{2}-\d{2}-\d{2})/
+    );
 
-        
-    }
+    const marca = extraerDato(
+        texto,
+        /marca:\s*([A-Z]+)/i
+    );
 
-    btnProcesar.addEventListener("click", async () => {
+    const interno = extraerDato(
+        texto,
+        /Interno:\s*(\d+)/
+    );
+
+    
+
+
+    const vehiculo = {
+        fecha,
+        marca,
+        interno,
+
+    };
+
+    return vehiculo;
+
+
+}
+
+//dominio,
+// modelo,
+// anio,
+// humo,
+// resultadoHumo
+
+btnProcesar.addEventListener("click", async () => {
     const archivo = pdfFile.files[0];
 
     if (!archivo) {
@@ -38,147 +70,24 @@ function extraerDato(texto, regex) {
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
+        const vehiculos = [];
+
         //esta parte es para contar paginas de a 1
-        for(let i = 25; i <= 27; i++){
-            const pagina = await pdf.getPage(1);
-            console.log("Leyendo pagina", 1);
+        for (let i = 25; i <= 27; i++) {
+            const pagina = await pdf.getPage(i);
+            const vehiculo = await leerVehiculo(pagina);
+            vehiculos.push(vehiculo);
         }
 
-        const texto = await leerVehiculo(pagina);
-        
+        console.table(vehiculos);
 
-        console.log(texto.substring(0, 1000));
+        resultado.innerHTML = `
+        <h2 class="text-xl font-bold mb-4">
+        Vehiculos encontrados: ${vehiculos.length}
+        </h2>
+        <pre>${JSON.stringify(vehiculos, null, 2)}</pre>
+        `;
 
-        console.log(texto.includes("Fecha"));
-        console.log(texto.match(/\d{2}-\d{2}-\d{2}/))
-
-        console.log("Pagina:", pagina.pageNumber);
-        console.log(texto);
-
-        console.log(
-            texto.indexOf("Fecha")
-        );
-
-        console.log(
-            texto.substring(
-                texto.indexOf("Fecha"),
-                texto.indexOf("Fecha") + 150
-            )
-        );
-
-        console.log(
-            texto.substring(
-                texto.indexOf("Dominio"),
-                texto.indexOf("Dominio") + 100
-            )
-        );
-
-        console.log(
-            texto.substring(
-                texto.indexOf("Modelo"),
-                texto.indexOf("Modelo") + 100
-            )
-        );
-
-        const fecha = extraerDato(
-            texto,
-            /Fecha.*?(\d{2}-\d{2}-\d{2})/
-        );
-
-        const marca = extraerDato(
-            texto,
-            /marca:\s*([A-Z]+)/i
-        );
-
-        const interno =
-            extraerDato(
-                texto,
-                /Interno:\s*(\d+)/
-            );
-
-        //esto busca el dominio
-        const dominioMatch = texto.match(
-            /Dominio:\s*([A-Z]{3}\s*\d{3})/i
-        );
-
-        //este lo guardo en el caso de coincidir
-        const dominio = dominioMatch
-            ? dominioMatch[1].trim()
-            : "No encontrado";
-
-
-
-        const modeloMatch =
-            texto.match(
-                /Modelo:\s*([A-Z0-9 ]+?)\s+Marca Caja:/i
-            );
-
-        const modelo =
-            modeloMatch
-                ? modeloMatch[1].trim()
-                : "No encontrado";
-
-        const anio = 
-        extraerDato(
-            texto,
-            /Año:\s*(\d{4})/
-        );
-        
-        //Busca la frase "Densidad del Humo".
-        const humoMatch = 
-        texto.match(
-            /Densidad del Humo.*?(\d+,\d+)/
-        );
-
-        //Si humoMatch existe (se encontró coincidencia)
-        const humo = humoMatch
-            ? humoMatch[1]
-            : "No encontrado";
-
-            //Buscar el resultado del ensayo
-        const resultadoHumoMatch = 
-        texto.match(
-            /Densidad del Humo[\s\S]*?Resultado\s+(\w+)/
-        );
-
-        //Guardar el resultado
-        const resultadoHumo = 
-        resultadoHumoMatch
-        ? resultadoHumoMatch[1]
-        : "No encontrado";
-
-        const vehiculo = {
-            fecha,
-            marca,
-            interno,
-            dominio,
-            modelo,
-            anio,
-            humo,
-            resultadoHumo
-        };
-
-        console.log(vehiculo);
-
-
-
-
-        //remplazo temporalmente
-        //resultado.innerHTML = `PDF cargado.
-        //Total de paginas: ${pdf.numPages}`;
-
-        resultado.innerHTML = `<div class="text-left">
-        <p><strong>Fecha:</strong> ${fecha}</p>
-        <p><strong>Marca:</strong> ${marca}</p>
-        <p><strong>Interno:</strong> ${interno}</p>
-        <p><strong>Dominio:</strong> ${dominio}</p>
-        <p><strong>Modelo:</strong> ${modelo}</p>
-         <p><strong>Año:</strong> ${anio}</p>
-        <p><strong>Humo:</strong>${humo}</p>
-        <p><strong>Resultado Humo:</strong> ${resultadoHumo}</p>
-        </div>
-
-        <pre class="mt-6 p-4 bg-slate-100 rounded-lg overflow-auto text-sm">${texto}</pre>`;
 
 
     }
