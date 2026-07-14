@@ -81,17 +81,17 @@ function mostrarTabla(vehiculos) {
     let html = `
     <h2>Vehiculos encontrados: ${vehiculos.length}</h2>
     
-    <table border="1" cellpadding="5">
-        <thead>
-             <tr>
-                    <th>Fecha</th>
-                    <th>Marca</th>
-                    <th>Interno</th>
-                    <th>Dominio</th>
-                    <th>Modelo</th>
-                    <th>Año</th>
-                    <th>Humo</th>
-                    <th>Resultado</th>
+    <table class="min-w-full border border-gray-300">
+        <thead class="bg-blue-600 text-white">
+             <tr class="hover:bg-gray-100 text-center">
+                    <th class="border px-3 py-2"Fecha</th>
+                    <th class="border px-3 py-2"Marca</th>
+                    <th class="border px-3 py-2"Interno</th>
+                    <th class="border px-3 py-2"Dominio</th>
+                    <th class="border px-3 py-2"Modelo</th>
+                    <th class="border px-3 py-2">Año</th>
+                    <th class="border px-3 py-2"Humo</th>
+                    <th class="border px-3 py-2"Resultado</th>
                 </tr>
             </thead>
             <tbody>
@@ -101,14 +101,14 @@ function mostrarTabla(vehiculos) {
 
            html += `
             <tr>
-                <td>${v.fecha}</td>
-                <td>${v.marca}</td>
-                <td>${v.interno}</td>
-                <td>${v.dominio}</td>
-                <td>${v.modelo}</td>
-                <td>${v.anio}</td>
-                <td>${v.humo}</td>
-                <td>${v.resultadoHumo}</td>
+                <td class="border px-3 py-2">${v.fecha}</td>
+                <td class="border px-3 py-2">${v.marca}</td>
+                <td class="border px-3 py-2">${v.interno}</td>
+                <td class="border px-3 py-2">${v.dominio}</td>
+                <td class="border px-3 py-2">${v.modelo}</td>
+                <td class="border px-3 py-2">${v.anio}</td>
+                <td class="border px-3 py-2">${v.humo}</td>
+                <td class="border px-3 py-2">${v.resultadoHumo}</td>
             </tr>
         `;
 
