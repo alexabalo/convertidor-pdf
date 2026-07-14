@@ -78,24 +78,25 @@ async function leerVehiculo(pagina) {
 }
 
 function mostrarTabla(vehiculos) {
-    let html = `
+    let html = `<div class="bg-white rounded-xl shadow-lg p-6">
     <h2>Vehiculos encontrados: ${vehiculos.length}</h2>
     
     <table class="min-w-full border border-gray-300">
         <thead class="bg-blue-600 text-white">
              <tr class="hover:bg-gray-100 text-center">
-                    <th class="border px-3 py-2"Fecha</th>
-                    <th class="border px-3 py-2"Marca</th>
-                    <th class="border px-3 py-2"Interno</th>
-                    <th class="border px-3 py-2"Dominio</th>
-                    <th class="border px-3 py-2"Modelo</th>
-                    <th class="border px-3 py-2">Año</th>
-                    <th class="border px-3 py-2"Humo</th>
-                    <th class="border px-3 py-2"Resultado</th>
+                    <th class="border px-3 py-2">Fecha</th>
+                    <th class="border px-3 py-2">Marca</th>
+                    <th class="border px-3 py-2">Interno</th>
+                    <th class="border px-3 py-2">Dominio</th>
+                    <th class="border px-3 py-2">Modelo</th>
+                    <th class="border px-3 py-2">>Año</th>
+                    <th class="border px-3 py-2">Humo</th>
+                    <th class="border px-3 py-2">Resultado</th>
                 </tr>
             </thead>
             <tbody>
     `;
+
 
     vehiculos.forEach(v => {
 
@@ -118,6 +119,8 @@ function mostrarTabla(vehiculos) {
      html += `
             </tbody>
         </table>
+        
+    </div>
     `;
 
     resultado.innerHTML = html;
