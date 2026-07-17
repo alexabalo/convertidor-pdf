@@ -89,7 +89,7 @@ function mostrarTabla(vehiculos) {
                     <th class="border px-3 py-2">Interno</th>
                     <th class="border px-3 py-2">Dominio</th>
                     <th class="border px-3 py-2">Modelo</th>
-                    <th class="border px-3 py-2">>Año</th>
+                    <th class="border px-3 py-2">Año</th>
                     <th class="border px-3 py-2">Humo</th>
                     <th class="border px-3 py-2">Resultado</th>
                 </tr>
@@ -120,6 +120,8 @@ function mostrarTabla(vehiculos) {
             </tbody>
         </table>
         
+    </div>
+
     </div>
     `;
 
