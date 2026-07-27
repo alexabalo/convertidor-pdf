@@ -147,26 +147,42 @@ btnProcesar.addEventListener("click", async () => {
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-       const vehiculos = []; 
+            console.log(pdf.numPages);
 
-        //esta parte es para contar paginas de a 1
-       for(let i = 1; i <= pdf.numPages; i++ ){
-        console.log(`Leyendo pagina ${i} de ${pdf.numPage}`);
-        const pagina = await pdf.getPage(i);
-        const vehiculo = await leerVehiculo(pagina);
+  const vehiculos = [];
 
-        //solo guarda paginas que realmente contienen vehiculo
-        if(vehiculo.interno !== "No encontrado"){
-            vehiculos.push(vehiculo);
+for (let i = 1; i <= pdf.numPages; i++) {
+
+    console.log(`Leyendo pagina ${i} de ${pdf.numPages}`);
+
+    const pagina = await pdf.getPage(i);
+
+    const contenido = await pagina.getTextContent();
+
+    const texto = contenido.items
+        .map(item => item.str)
+        .join(" ");
+
+     if (texto.includes("Interno")) {
+    console.log("==================================");
+    console.log("Página con vehículo:", i);
+    console.log(texto.substring(0, 1000));
+}
+
+       const vehiculo = await leerVehiculo(pagina);
+
+if (vehiculo.interno !== "No encontrado") {
+    vehiculos.push(vehiculo);
+}
         }
-    }
+    
             
             console.log("Vehiculos encontrados", vehiculos.length);
              console.table(vehiculos);
              mostrarTabla(vehiculos);
 
-    }
-
+    
+}
  
 
     catch (error) {
