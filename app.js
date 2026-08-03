@@ -149,7 +149,7 @@ btnProcesar.addEventListener("click", async () => {
 
             console.log(pdf.numPages);
 
-  const vehiculos = [];
+  const vehiculos = {};
 
 for (let i = 1; i <= pdf.numPages; i++) {
 
@@ -162,18 +162,25 @@ for (let i = 1; i <= pdf.numPages; i++) {
         .join(" ");
 
     // Solo procesar páginas que tienen las mediciones
-    if (!texto.includes("MEDICIONES:")) {
+    if (!texto.includes("Datos del vehículo")) {
         continue;
+
+
     }
+
+    console.log("Pagina encontrada:", i);
 
     const vehiculo = await leerVehiculo(pagina);
 
-    vehiculos.push(vehiculo);
-
+    if(!vehiculos[vehiculo.interno]){
+        vehiculos[vehiculo.interno] = vehiculo;
+    }
 }
-    
-            
 
+const listaVehiculos = Object.values(vehiculos);
+console.log("Vehiculos encontrados:", vehiculos.length);
+console.table(listaVehiculos);
+mostrarTabla(listaVehiculos);
     
 }
  
