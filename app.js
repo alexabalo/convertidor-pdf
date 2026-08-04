@@ -42,7 +42,7 @@ async function leerVehiculo(pagina) {
 
     const modelo = extraerDato(
         texto,
-         /Modelo:\s*([A-Z0-9 ]+?)\s+Marca Caja:/i
+        /Modelo:\s*([A-Z0-9 ]+?)\s+Marca Caja:/i
     );
 
     const anio = extraerDato(
@@ -59,18 +59,62 @@ async function leerVehiculo(pagina) {
         texto,
         /Densidad del Humo[\s\S]*?Resultado\s+(\w+)/
 
+    );
 
-    )
+    const propietario = extraerDato(
+        texto,
+        /Propietario:\s*(.*?)\s+Marca:/i
+    );
+
+    const equipo = extraerDato(
+        texto,
+        /Equipo:\s*(.*?)\s+Año:/i
+    );
+
+    const chasis = extraerDato(
+        texto,
+        /Chasis:\s*(.*?)\s+Motor:/i
+    );
+
+    const motor = extraerDato(
+    texto,
+    /Motor:\s*(.*?)\s+Modelo:/i
+    );
+
+    const marcaCaja = extraerDato(
+    texto,
+    /Marca Caja:\s*(.*?)\s+Tipo de Alimentación/i
+    );
+
+    const alimentacion = extraerDato(
+    texto,
+    /Tipo de Alimentación del Motor\s*(.*?)\s+Potencia del Motor/i
+    );
+
+    const potencia = extraerDato(
+    texto,
+    /Potencia del Motor en CV\s*(\d+)/i
+    );
+
+
 
     const vehiculo = {
         fecha,
+        propietario,
         marca,
         interno,
         dominio,
         modelo,
         anio,
         humo,
-        resultadoHumo
+        resultadoHumo,
+        equipo,
+        chasis,
+        motor,
+        marcaCaja,
+        alimentacion,
+        potencia
+
     };
 
     return vehiculo;
@@ -85,6 +129,7 @@ function mostrarTabla(vehiculos) {
         <thead class="bg-blue-600 text-white">
              <tr class="hover:bg-gray-100 text-center">
                     <th class="border px-3 py-2">Fecha</th>
+                    <th class="border px-3 py-2">Propietario</th>
                     <th class="border px-3 py-2">Marca</th>
                     <th class="border px-3 py-2">Interno</th>
                     <th class="border px-3 py-2">Dominio</th>
@@ -92,6 +137,12 @@ function mostrarTabla(vehiculos) {
                     <th class="border px-3 py-2">Año</th>
                     <th class="border px-3 py-2">Humo</th>
                     <th class="border px-3 py-2">Resultado</th>
+                    <th class="border px-3 py-2">Equipo</th>
+                    <th class="border px-3 py-2">Chasis</th>
+                    <th class="border px-3 py-2">Motor</th>
+                    <th class="border px-3 py-2">Marca de Caja</th>
+                    <th class="border px-3 py-2">Tipo de Alimentacion</th>
+                    <th class="border px-3 py-2">Potencia</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,9 +151,10 @@ function mostrarTabla(vehiculos) {
 
     vehiculos.forEach(v => {
 
-           html += `
+        html += `
             <tr>
                 <td class="border px-3 py-2">${v.fecha}</td>
+                <td class="border" px-3 py-2">${v.propietario}</td>
                 <td class="border px-3 py-2">${v.marca}</td>
                 <td class="border px-3 py-2">${v.interno}</td>
                 <td class="border px-3 py-2">${v.dominio}</td>
@@ -110,13 +162,19 @@ function mostrarTabla(vehiculos) {
                 <td class="border px-3 py-2">${v.anio}</td>
                 <td class="border px-3 py-2">${v.humo}</td>
                 <td class="border px-3 py-2">${v.resultadoHumo}</td>
+                <td class="border px-3 py-2">${v.equipo}</td>
+                <td class="border px-3 py-2">${v.chasis}</td>
+                <td class="border px-3 py-2">${v.motor}</td>
+                <td class="border px-3 py-2">${v.marcaCaja}</td>
+                <td class="border px-3 py-2">${v.alimentacion}</td>
+                <td class="border px-3 py-2">${v.potencia}</td>
             </tr>
         `;
 
     });
 
 
-     html += `
+    html += `
             </tbody>
         </table>
         
@@ -139,7 +197,7 @@ btnProcesar.addEventListener("click", async () => {
         return;
     }
 
-  
+
 
     try {
         const arrayBuffer = await archivo.arrayBuffer();
@@ -147,43 +205,43 @@ btnProcesar.addEventListener("click", async () => {
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-            console.log(pdf.numPages);
+        console.log(pdf.numPages);
 
-  const vehiculos = {};
+        const vehiculos = {};
 
-for (let i = 1; i <= pdf.numPages; i++) {
+        for (let i = 1; i <= pdf.numPages; i++) {
 
-    const pagina = await pdf.getPage(i);
+            const pagina = await pdf.getPage(i);
 
-    const contenido = await pagina.getTextContent();
+            const contenido = await pagina.getTextContent();
 
-    const texto = contenido.items
-        .map(item => item.str)
-        .join(" ");
+            const texto = contenido.items
+                .map(item => item.str)
+                .join(" ");
 
-    // Solo procesar páginas que tienen las mediciones
-    if (!texto.includes("Datos del vehículo")) {
-        continue;
+            // Solo procesar páginas que tienen las mediciones
+            if (!texto.includes("Datos del vehículo")) {
+                continue;
 
+
+            }
+
+            console.log("Pagina encontrada:", i);
+
+            const vehiculo = await leerVehiculo(pagina);
+
+            if (!vehiculos[vehiculo.interno]) {
+                vehiculos[vehiculo.interno] = vehiculo;
+            }
+        }
+
+        const listaVehiculos = Object.values(vehiculos);
+        console.log("Vehiculos encontrados:", vehiculos.length);
+        console.table(listaVehiculos);
+        mostrarTabla(listaVehiculos);
 
     }
 
-    console.log("Pagina encontrada:", i);
-
-    const vehiculo = await leerVehiculo(pagina);
-
-    if(!vehiculos[vehiculo.interno]){
-        vehiculos[vehiculo.interno] = vehiculo;
-    }
-}
-
-const listaVehiculos = Object.values(vehiculos);
-console.log("Vehiculos encontrados:", vehiculos.length);
-console.table(listaVehiculos);
-mostrarTabla(listaVehiculos);
-    
-}
- 
 
     catch (error) {
         console.error(error);
