@@ -187,6 +187,18 @@ function mostrarTabla(vehiculos) {
 }
 
 
+function exportarExcel(listaVehiculos) {
+
+    const hoja = XLSX.utils.json_to_sheet(listaVehiculos);
+
+    const libro = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(libro, hoja, "Vehiculos");
+
+    XLSX.writeFile(libro, "vehiculos.xlsx");
+
+}
+
 
 
 btnProcesar.addEventListener("click", async () => {
@@ -239,6 +251,7 @@ btnProcesar.addEventListener("click", async () => {
         console.log("Vehiculos encontrados:", vehiculos.length);
         console.table(listaVehiculos);
         mostrarTabla(listaVehiculos);
+        exportarExcel(listaVehiculos);
 
     }
 
