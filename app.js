@@ -1,6 +1,9 @@
 const pdfFile = document.getElementById("pdfFile");
 const btnProcesar = document.getElementById("btnProcesar");
 const resultado = document.getElementById("resultado");
+const btnDescargar = document.getElementById("btnDescarga");
+
+let listaVehiculos = [];
 
 function extraerDato(texto, regex) {
     //texto match, busca patron del texto
@@ -201,6 +204,9 @@ function exportarExcel(listaVehiculos) {
 
 
 
+
+
+
 btnProcesar.addEventListener("click", async () => {
     const archivo = pdfFile.files[0];
 
@@ -213,6 +219,8 @@ btnProcesar.addEventListener("click", async () => {
 
     try {
         const arrayBuffer = await archivo.arrayBuffer();
+
+         exportarExcel(listaVehiculos);
 
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -247,11 +255,11 @@ btnProcesar.addEventListener("click", async () => {
             }
         }
 
-        const listaVehiculos = Object.values(vehiculos);
+         listaVehiculos = Object.values(vehiculos);
         console.log("Vehiculos encontrados:", vehiculos.length);
         console.table(listaVehiculos);
         mostrarTabla(listaVehiculos);
-        exportarExcel(listaVehiculos);
+        btnDescargar.classList.remove("hidden");
 
     }
 
