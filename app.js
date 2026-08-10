@@ -1,7 +1,8 @@
 const pdfFile = document.getElementById("pdfFile");
 const btnProcesar = document.getElementById("btnProcesar");
+
+const btnDescargar = document.getElementById("btnDescargar");
 const resultado = document.getElementById("resultado");
-const btnDescargar = document.getElementById("btnDescarga");
 
 let listaVehiculos = [];
 
@@ -157,7 +158,7 @@ function mostrarTabla(vehiculos) {
         html += `
             <tr>
                 <td class="border px-3 py-2">${v.fecha}</td>
-                <td class="border" px-3 py-2">${v.propietario}</td>
+                <td class="border px-3 py-2">${v.propietario}</td>
                 <td class="border px-3 py-2">${v.marca}</td>
                 <td class="border px-3 py-2">${v.interno}</td>
                 <td class="border px-3 py-2">${v.dominio}</td>
@@ -202,6 +203,10 @@ function exportarExcel(listaVehiculos) {
 
 }
 
+          btnDescargar.addEventListener("click", () => {
+    exportarExcel(listaVehiculos);
+});
+
 
 
 
@@ -220,12 +225,12 @@ btnProcesar.addEventListener("click", async () => {
     try {
         const arrayBuffer = await archivo.arrayBuffer();
 
-         exportarExcel(listaVehiculos);
+         
 
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-        console.log(pdf.numPages);
+        console.log("Páginas del PDF:", pdf.numPages);
 
         const vehiculos = {};
 
@@ -253,10 +258,12 @@ btnProcesar.addEventListener("click", async () => {
             if (!vehiculos[vehiculo.interno]) {
                 vehiculos[vehiculo.interno] = vehiculo;
             }
+
+  
         }
 
          listaVehiculos = Object.values(vehiculos);
-        console.log("Vehiculos encontrados:", vehiculos.length);
+        console.log("Vehiculos encontrados:", listaVehiculos.length);
         console.table(listaVehiculos);
         mostrarTabla(listaVehiculos);
         btnDescargar.classList.remove("hidden");
