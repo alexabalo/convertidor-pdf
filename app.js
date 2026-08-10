@@ -1,6 +1,7 @@
+const loader = document.getElementById("loader");
+const progreso = document.getElementById("progreso");
 const pdfFile = document.getElementById("pdfFile");
 const btnProcesar = document.getElementById("btnProcesar");
-
 const btnDescargar = document.getElementById("btnDescargar");
 const resultado = document.getElementById("resultado");
 
@@ -220,12 +221,18 @@ btnProcesar.addEventListener("click", async () => {
         return;
     }
 
+    //Mostrar loader
+    loader.classList.remove("hidden");
 
+    //Desactivar boton procesar
+    btnProcesar.disable = true;
+    btnProcesar.classList.add("opacity-50", "cursor-not-allowed");
+
+    //ocultar descarga mientras procese
+    btnDescargar.classList.add("hidden");
 
     try {
         const arrayBuffer = await archivo.arrayBuffer();
-
-         
 
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -235,6 +242,8 @@ btnProcesar.addEventListener("click", async () => {
         const vehiculos = {};
 
         for (let i = 1; i <= pdf.numPages; i++) {
+
+            progreso.textContent = `Procesando pagina ${i} de ${pdf.numPages}...`
 
             const pagina = await pdf.getPage(i);
 
@@ -266,6 +275,14 @@ btnProcesar.addEventListener("click", async () => {
         console.log("Vehiculos encontrados:", listaVehiculos.length);
         console.table(listaVehiculos);
         mostrarTabla(listaVehiculos);
+
+
+        loader.classList.add("hidden");
+btnProcesar.disabled = false;
+btnProcesar.classList.remove("opacity-50", "cursor-not-allowed");
+
+btnDescargar.classList.remove("hidden");
+
         btnDescargar.classList.remove("hidden");
 
     }
@@ -274,5 +291,16 @@ btnProcesar.addEventListener("click", async () => {
     catch (error) {
         console.error(error);
         resultado.textContent = "Error al leer PDF";
+
+           // Ocultar loader
+    loader.classList.add("hidden");
+
+    // Reactivar botón
+    btnProcesar.disabled = false;
+
+    btnProcesar.classList.remove(
+        "opacity-50",
+        "cursor-not-allowed"
+    );
     }
 });
