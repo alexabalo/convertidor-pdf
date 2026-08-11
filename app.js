@@ -1,9 +1,18 @@
+
+
 const loader = document.getElementById("loader");
 const progreso = document.getElementById("progreso");
 const pdfFile = document.getElementById("pdfFile");
 const btnProcesar = document.getElementById("btnProcesar");
 const btnDescargar = document.getElementById("btnDescargar");
 const resultado = document.getElementById("resultado");
+
+console.log("loader:", loader);
+console.log("progreso:", progreso);
+console.log("pdfFile:", pdfFile);
+console.log("btnProcesar:", btnProcesar);
+console.log("btnDescargar:", btnDescargar);
+console.log("resultado:", resultado);
 
 let listaVehiculos = [];
 
@@ -225,7 +234,7 @@ btnProcesar.addEventListener("click", async () => {
     loader.classList.remove("hidden");
 
     //Desactivar boton procesar
-    btnProcesar.disable = true;
+    btnProcesar.disabled = true;
     btnProcesar.classList.add("opacity-50", "cursor-not-allowed");
 
     //ocultar descarga mientras procese
@@ -283,7 +292,7 @@ btnProcesar.classList.remove("opacity-50", "cursor-not-allowed");
 
 btnDescargar.classList.remove("hidden");
 
-        btnDescargar.classList.remove("hidden");
+
 
     }
 
