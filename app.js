@@ -243,8 +243,6 @@ btnProcesar.addEventListener("click", async () => {
     try {
         const arrayBuffer = await archivo.arrayBuffer();
 
-         exportarExcel(listaVehiculos);
-
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
