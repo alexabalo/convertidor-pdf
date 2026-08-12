@@ -1,7 +1,18 @@
+
+
+const loader = document.getElementById("loader");
+const progreso = document.getElementById("progreso");
 const pdfFile = document.getElementById("pdfFile");
 const btnProcesar = document.getElementById("btnProcesar");
+const btnDescargar = document.getElementById("btnDescargar");
 const resultado = document.getElementById("resultado");
-const btnDescargar = document.getElementById("btnDescarga");
+
+console.log("loader:", loader);
+console.log("progreso:", progreso);
+console.log("pdfFile:", pdfFile);
+console.log("btnProcesar:", btnProcesar);
+console.log("btnDescargar:", btnDescargar);
+console.log("resultado:", resultado);
 
 let listaVehiculos = [];
 
@@ -157,7 +168,7 @@ function mostrarTabla(vehiculos) {
         html += `
             <tr>
                 <td class="border px-3 py-2">${v.fecha}</td>
-                <td class="border" px-3 py-2">${v.propietario}</td>
+                <td class="border px-3 py-2">${v.propietario}</td>
                 <td class="border px-3 py-2">${v.marca}</td>
                 <td class="border px-3 py-2">${v.interno}</td>
                 <td class="border px-3 py-2">${v.dominio}</td>
@@ -202,6 +213,10 @@ function exportarExcel(listaVehiculos) {
 
 }
 
+          btnDescargar.addEventListener("click", () => {
+    exportarExcel(listaVehiculos);
+});
+
 
 
 
@@ -215,7 +230,15 @@ btnProcesar.addEventListener("click", async () => {
         return;
     }
 
+    //Mostrar loader
+    loader.classList.remove("hidden");
 
+    //Desactivar boton procesar
+    btnProcesar.disabled = true;
+    btnProcesar.classList.add("opacity-50", "cursor-not-allowed");
+
+    //ocultar descarga mientras procese
+    btnDescargar.classList.add("hidden");
 
     try {
         const arrayBuffer = await archivo.arrayBuffer();
@@ -225,11 +248,13 @@ btnProcesar.addEventListener("click", async () => {
         const pdf =
             await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-        console.log(pdf.numPages);
+        console.log("Páginas del PDF:", pdf.numPages);
 
         const vehiculos = {};
 
         for (let i = 1; i <= pdf.numPages; i++) {
+
+            progreso.textContent = `Procesando pagina ${i} de ${pdf.numPages}...`
 
             const pagina = await pdf.getPage(i);
 
@@ -253,13 +278,23 @@ btnProcesar.addEventListener("click", async () => {
             if (!vehiculos[vehiculo.interno]) {
                 vehiculos[vehiculo.interno] = vehiculo;
             }
+
+  
         }
 
          listaVehiculos = Object.values(vehiculos);
-        console.log("Vehiculos encontrados:", vehiculos.length);
+        console.log("Vehiculos encontrados:", listaVehiculos.length);
         console.table(listaVehiculos);
         mostrarTabla(listaVehiculos);
-        btnDescargar.classList.remove("hidden");
+
+
+        loader.classList.add("hidden");
+btnProcesar.disabled = false;
+btnProcesar.classList.remove("opacity-50", "cursor-not-allowed");
+
+btnDescargar.classList.remove("hidden");
+
+
 
     }
 
@@ -267,5 +302,16 @@ btnProcesar.addEventListener("click", async () => {
     catch (error) {
         console.error(error);
         resultado.textContent = "Error al leer PDF";
+
+           // Ocultar loader
+    loader.classList.add("hidden");
+
+    // Reactivar botón
+    btnProcesar.disabled = false;
+
+    btnProcesar.classList.remove(
+        "opacity-50",
+        "cursor-not-allowed"
+    );
     }
 });
