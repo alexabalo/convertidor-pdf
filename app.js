@@ -7,12 +7,7 @@ const btnProcesar = document.getElementById("btnProcesar");
 const btnDescargar = document.getElementById("btnDescargar");
 const resultado = document.getElementById("resultado");
 
-console.log("loader:", loader);
-console.log("progreso:", progreso);
-console.log("pdfFile:", pdfFile);
-console.log("btnProcesar:", btnProcesar);
-console.log("btnDescargar:", btnDescargar);
-console.log("resultado:", resultado);
+
 
 let listaVehiculos = [];
 
