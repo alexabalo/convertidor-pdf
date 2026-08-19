@@ -6,4 +6,112 @@
 
 body{
     font-family: "Roboto", sans-serif;
+     background:
+        linear-gradient(
+            135deg,
+            #eef2f7 0%,
+            #f8fafc 50%,
+            #e9edf3 100%
+        );
+
+        color: #0f172a;
+        min-height: 100vh;
+        padding: 24px;
 }
+
+.app-container{
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    
+}
+
+.header-card{
+    position: relative;
+    min-height: 150px;
+    background-color: white;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 28px 32px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.header-icon{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 24px;
+}
+
+.pdf-icon,
+.excel-icon{
+    width: 48px;
+    height: 58px;
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.pdf-icon{
+    color: #dc2626;
+    background: #fef2f2;
+    border:2px solid #fecaca;
+}
+
+.excel-icon {
+    color: #16a34a;
+    background: #f0fdf4;
+    border: 2px solid #bbf7d0;
+
+}
+
+.arrow-icon{
+    font-size: 22px;
+    color: #64748b;
+}
+
+.header-info{
+    position: relative;
+    z-index: 2;
+    max-width: 500px;
+}
+
+.header-info h1{
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.header-info p{
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.header-decoration{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 42%;
+    height: 100%;
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #fed7aa
+        );
+
+    opacity: 0.8;
+}
+
+/* Linea simulando ruta */
